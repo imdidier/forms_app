@@ -40,25 +40,49 @@ class _RegisterForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+    String username = '';
+    String email = '';
+    String password = '';
     return Form(
+      key: formKey,
       child: Column(
         children: [
           const FlutterLogo(size: 150),
-          const CustomTextFormField(
+          CustomTextFormField(
             label: 'User name',
+            onChanged: (value) => username = value,
+            validator: (value) {
+              if (value == null || value.isEmpty) return 'Campo requerido';
+              if (value.isEmpty) return 'Campo requerido';
+              if (value.trim().length <= 6) return 'Más de seis letras';
+              return null;
+            },
           ),
           const SizedBox(height: 15),
-          const CustomTextFormField(
+          CustomTextFormField(
             label: 'Email',
+            onChanged: (value) => email = value,
+            validator: (value) {
+              if (value == null || value.isEmpty) return 'Campo requerido';
+              if (value.isEmpty) return 'Campo requerido';
+              if (value.trim().length <= 6) return 'Más de seis letras';
+              return null;
+            },
           ),
           const SizedBox(height: 15),
-          const CustomTextFormField(
+          CustomTextFormField(
             label: 'Password',
             obscureText: true,
+            onChanged: (value) => password = value,
           ),
           const SizedBox(height: 15),
           FilledButton.tonalIcon(
-            onPressed: () {},
+            onPressed: () {
+              final isValid = formKey.currentState!.validate();
+              if (!isValid) return;
+            },
             icon: const Icon(Icons.save_outlined),
             label: const Text('Create user'),
           ),
