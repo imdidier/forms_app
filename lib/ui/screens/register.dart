@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:forms_app/ui/blocs/register/register_cubit.dart';
 import 'package:forms_app/ui/widgets/widgets.dart';
 
 class RegisterScreen extends StatelessWidget {
@@ -10,7 +12,10 @@ class RegisterScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('New User'),
       ),
-      body: const _RegisterView(),
+      body: BlocProvider(
+        create: (context) => RegisterCubit(),
+        child: const _RegisterView(),
+      ),
     );
   }
 }
@@ -41,10 +46,7 @@ class _RegisterForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
-    String username = '';
-    String email = '';
-    String password = '';
+    final registerCubit = context.watch<RegisterCubit>();
     return Form(
       key: formKey,
       child: Column(
@@ -52,7 +54,12 @@ class _RegisterForm extends StatelessWidget {
           const FlutterLogo(size: 150),
           CustomTextFormField(
             label: 'User name',
-            onChanged: (value) => username = value,
+            onChanged:
+
+                // (value) {
+                registerCubit.usernameChanged,
+            //   formKey.currentState!.validate();
+            // },
             validator: (value) {
               if (value == null || value.isEmpty) return 'Campo requerido';
               if (value.isEmpty) return 'Campo requerido';
@@ -63,7 +70,28 @@ class _RegisterForm extends StatelessWidget {
           const SizedBox(height: 15),
           CustomTextFormField(
             label: 'Email',
-            onChanged: (value) => email = value,
+            onChanged: (value) {
+              registerCubit.emailChanged(value);
+              formKey.currentState!.validate();
+            },
+            validator: (value) {
+              if (value == null || value.isEmpty) return 'Campo requerido';
+              if (value.isEmpty) return 'Campo requerido';
+              final emailRegExp = RegExp(
+                r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+              );
+              if (!emailRegExp.hasMatch(value)) return 'No es un correo válido';
+              return null;
+            },
+          ),
+          const SizedBox(height: 15),
+          CustomTextFormField(
+            label: 'Password',
+            obscureText: true,
+            onChanged: (value) {
+              registerCubit.passwordChanged(value);
+              formKey.currentState!.validate();
+            },
             validator: (value) {
               if (value == null || value.isEmpty) return 'Campo requerido';
               if (value.isEmpty) return 'Campo requerido';
@@ -72,16 +100,11 @@ class _RegisterForm extends StatelessWidget {
             },
           ),
           const SizedBox(height: 15),
-          CustomTextFormField(
-            label: 'Password',
-            obscureText: true,
-            onChanged: (value) => password = value,
-          ),
-          const SizedBox(height: 15),
           FilledButton.tonalIcon(
             onPressed: () {
               final isValid = formKey.currentState!.validate();
               if (!isValid) return;
+              registerCubit.onSubmit();
             },
             icon: const Icon(Icons.save_outlined),
             label: const Text('Create user'),
