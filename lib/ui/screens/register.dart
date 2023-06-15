@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:forms_app/ui/blocs/register/register_cubit.dart';
 import 'package:forms_app/ui/widgets/widgets.dart';
+
+import '../blocs/register/register_cubit.dart';
 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});
@@ -54,14 +55,12 @@ class _RegisterForm extends StatelessWidget {
           const FlutterLogo(size: 150),
           CustomTextFormField(
             label: 'User name',
-            onChanged:
-
-                // (value) {
-                registerCubit.usernameChanged,
-            //   formKey.currentState!.validate();
-            // },
+            onChanged: (value) {
+              registerCubit.usernameChanged(value);
+              formKey.currentState!.validate();
+            },
             validator: (value) {
-              if (value == null || value.isEmpty) return 'Campo requerido';
+              if (value == null || value.isEmpty) return 'Campo reuerido';
               if (value.isEmpty) return 'Campo requerido';
               if (value.trim().length <= 6) return 'Más de seis letras';
               return null;
@@ -102,8 +101,8 @@ class _RegisterForm extends StatelessWidget {
           const SizedBox(height: 15),
           FilledButton.tonalIcon(
             onPressed: () {
-              final isValid = formKey.currentState!.validate();
-              if (!isValid) return;
+              // final isValid = formKey.currentState!.validate();
+              // if (!isValid) return;
               registerCubit.onSubmit();
             },
             icon: const Icon(Icons.save_outlined),

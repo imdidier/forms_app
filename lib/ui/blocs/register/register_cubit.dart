@@ -1,5 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:formz/formz.dart';
+
+import '../../../infrastructure/inputs/inputs.dart';
 
 part 'register_state.dart';
 
@@ -11,7 +14,11 @@ class RegisterCubit extends Cubit<RegisterFormState> {
   }
 
   void usernameChanged(String value) {
-    emit(state.copyWith(username: value));
+    final username = Username.dirty(value);
+    emit(state.copyWith(
+      username: username,
+      isValid: Formz.validate([username, state.password]),
+    ));
   }
 
   void emailChanged(String value) {
@@ -19,6 +26,10 @@ class RegisterCubit extends Cubit<RegisterFormState> {
   }
 
   void passwordChanged(String value) {
-    emit(state.copyWith(password: value));
+    final password = Password.dirty(value);
+    emit(state.copyWith(
+      password: password,
+      isValid: Formz.validate([password, state.username]),
+    ));
   }
 }
