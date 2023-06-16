@@ -44,59 +44,70 @@ class _RegisterView extends StatelessWidget {
 class _RegisterForm extends StatelessWidget {
   const _RegisterForm();
 
+  // final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
     final registerCubit = context.watch<RegisterCubit>();
+    final username = registerCubit.state.username;
+    final password = registerCubit.state.password;
+    final email = registerCubit.state.email;
+
     return Form(
-      key: formKey,
+      // key: formKey,
       child: Column(
         children: [
           const FlutterLogo(size: 150),
           CustomTextFormField(
             label: 'User name',
-            onChanged: (value) {
-              registerCubit.usernameChanged(value);
-              formKey.currentState!.validate();
-            },
-            validator: (value) {
-              if (value == null || value.isEmpty) return 'Campo reuerido';
-              if (value.isEmpty) return 'Campo requerido';
-              if (value.trim().length <= 6) return 'Más de seis letras';
-              return null;
-            },
+            onChanged: registerCubit.usernameChanged,
+            errorMessage: username.errorMessage,
+
+            // onChanged: (value) {
+            //registerCubit.usernameChanged(value);
+            // formKey.currentState!.validate();
+            // },
+            // validator: (value) {
+            //   if (value == null || value.isEmpty) return 'Campo reuerido';
+            //   if (value.isEmpty) return 'Campo requerido';
+            //   if (value.trim().length <= 6) return 'Más de seis letras';
+            //   return null;
+            // },
           ),
           const SizedBox(height: 15),
           CustomTextFormField(
             label: 'Email',
-            onChanged: (value) {
-              registerCubit.emailChanged(value);
-              formKey.currentState!.validate();
-            },
-            validator: (value) {
-              if (value == null || value.isEmpty) return 'Campo requerido';
-              if (value.isEmpty) return 'Campo requerido';
-              final emailRegExp = RegExp(
-                r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-              );
-              if (!emailRegExp.hasMatch(value)) return 'No es un correo válido';
-              return null;
-            },
+            onChanged: registerCubit.emailChanged,
+            errorMessage: email.errorMessage,
+            // onChanged: (value) {
+            //   registerCubit.emailChanged(value);
+            //   formKey.currentState!.validate();
+            // },
+            // validator: (value) {
+            //   if (value == null || value.isEmpty) return 'Campo requerido';
+            //   if (value.isEmpty) return 'Campo requerido';
+            //   final emailRegExp = RegExp(
+            //     r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+            //   );
+            //   if (!emailRegExp.hasMatch(value)) return 'No es un correo válido';
+            //   return null;
+            // },
           ),
           const SizedBox(height: 15),
           CustomTextFormField(
             label: 'Password',
             obscureText: true,
-            onChanged: (value) {
-              registerCubit.passwordChanged(value);
-              formKey.currentState!.validate();
-            },
-            validator: (value) {
-              if (value == null || value.isEmpty) return 'Campo requerido';
-              if (value.isEmpty) return 'Campo requerido';
-              if (value.trim().length <= 6) return 'Más de seis letras';
-              return null;
-            },
+            onChanged: registerCubit.passwordChanged,
+            errorMessage: password.errorMessage,
+            // onChanged: (value) {
+            //   registerCubit.passwordChanged(value);
+            //    formKey.currentState!.validate();
+            // },
+            // validator: (value) {
+            //   if (value == null || value.isEmpty) return 'Campo requerido';
+            //   if (value.isEmpty) return 'Campo requerido';
+            //   if (value.trim().length <= 6) return 'Más de seis letras';
+            //   return null;
+            // },
           ),
           const SizedBox(height: 15),
           FilledButton.tonalIcon(
